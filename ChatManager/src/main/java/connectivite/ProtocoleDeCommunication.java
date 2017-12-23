@@ -275,9 +275,4 @@ public class ProtocoleDeCommunication {
             envoieDunMessageEnTCP(loginDeLUtilisateurAQuiOnEnvoieLeMessage, messageSurLeReseau);
         }catch (Exception e){}
     }
-
-
-
-
-
 }

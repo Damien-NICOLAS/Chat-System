@@ -32,17 +32,23 @@ public class MessageHistorique {
 
 
     }
+
+    public void setFile(){
+        fichierSessionHistorique = new File(toString());
+        System.out.println(fichierSessionHistorique.getName());
+    }
+
     public String toString() {
         File file = new File("ChatManager/src/main/HistoriqueDossier/path.txt");
         String path = file.getAbsolutePath();
         String pathMoinsText = path.substring(0, path.length()-8);
-
+        System.out.println(pathMoinsText+chatManager.userLogin()+"_"+chatManager.useSessions().userDistantSessionCourante().getLogin()+".txt");
         return pathMoinsText+chatManager.userLogin()+"_"+chatManager.useSessions().userDistantSessionCourante().getLogin()+".txt";
     }
 
     public void creerFichier() throws IOException, NotFileException {
         fichierSessionHistorique = new File(toString());
-        FileWriter fw = new FileWriter("src/main/historiqueFIle/"+chatManager.userLogin()+"_"+chatManager.useSessionCourante().getLogin()+".txt");
+        FileWriter fw = new FileWriter(toString());
 
 
     }
@@ -50,9 +56,7 @@ public class MessageHistorique {
 
     public void ecriturefichier(MomentEcriture moment, String message) throws IOException {
         String message_prepare = null;
-        File fichierSessionHistorique = this.findfichier();
-        System.out.println(fichierSessionHistorique.getName());
-        FileWriter write = new FileWriter(fichierSessionHistorique, true);
+        FileWriter write = new FileWriter(toString(), true);
         switch (moment){
 
             case MESSAGE_ENVOYE:

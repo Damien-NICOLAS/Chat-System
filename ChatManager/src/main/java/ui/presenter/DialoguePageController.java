@@ -2,6 +2,7 @@ package ui.presenter;
 
 import historique.MessageHistorique;
 import historique.MomentEcriture;
+import historique.NotFileException;
 import main.ChatManager;
 import model.ListeDesUsagers;
 import model.Sessions;
@@ -51,10 +52,12 @@ public class DialoguePageController {
         }
     }
 
-    public void onClickSelectionUserCo(TreePath selection) {
+
+
+
+    public void onClickSelectionUserCo(TreePath selection, JTree listeSessions, JPanel panel, DialoguePageViewer view) throws IOException, NotFileException {
         String chemin = selection.toString();
         String pseudo = null;
-        String matchresult;
         System.out.println(chemin);
         if(chemin.contains(",")) {
             String[] result = chemin.split(",");
@@ -65,11 +68,11 @@ public class DialoguePageController {
             System.out.println(result2[1]);
             pseudo = result2[1];
         }else{
-           String[] result = chemin.split("]");
+            String[] result = chemin.split("]");
             System.out.println(result[0]);
-           String[] result1 = result[0].split("\\[");
+            String[] result1 = result[0].split("\\[");
             System.out.println(result1[0] + result1[1]);
-           pseudo = result1[1];
+            pseudo = result1[1];
 
         }
         System.out.println("onClickSelectionUserCo :"+pseudo);
@@ -82,21 +85,28 @@ public class DialoguePageController {
                 chatManager.defenieSessionCourante(newUserDistant);
                 System.out.println("Après ajout : ");
                 chatManager.useSessions().afficheListeSessions();
+                actualiserMenuSession(panel,listeSessions, view);
+                MessageHistorique messageHistorique = new MessageHistorique(chatManager);
+                messageHistorique.setFile();
+                messageHistorique.creerFichier();
+                messageHistorique.lireFichier(chatManager.useSessions().retourneFileUserCourant(),chatManager.useSessionCourante().getLogin());
                 chatManager.getProtocoleDeCommunication().envoieDeDemandeDeSession(newUserDistant.getLogin());
                 System.out.println("onClickSectionUserCo fin :" + chatManager.useSessionCourante().toString());
             }
         }
     }
 
-    public void onClickSelectionSession(String pseudoUtilisateurDistantEnChat){
+    public void onClickSelectionSession(String pseudoUtilisateurDistantEnChat, JPanel panel, JTree listeSession, DialoguePageViewer view){
         UsersDistants newUserDistant = chatManager.accesALaListeDesUsagers().retourneUtilisateurDistantsParSonPseudo(pseudoUtilisateurDistantEnChat);
-            if(newUserDistant !=null) {
-                chatManager.defenieSessionCourante(newUserDistant);
-            }
+        if(newUserDistant !=null) {
+            chatManager.defenieSessionCourante(newUserDistant);
+            actualiserMenuSession(panel,listeSession, view);
+        }
+
 
     }
 
-    public DefaultMutableTreeNode actualiserMenuUsersCo() {
+    public JTree creeMenuUsersCo(JTree listeUsersConnectes,JTree listeSessions, JPanel sessionsPane, DialoguePageViewer view) {
         DefaultMutableTreeNode root = new DefaultMutableTreeNode("Utilisateurs Connectés");
 
         if (!(this.chatManager.accesALaListeDesUsagers().retourneToutLesUsagers().isEmpty())) {
@@ -110,15 +120,25 @@ public class DialoguePageController {
                     if(pseudoUsersCo != null) {
                         DefaultMutableTreeNode child = new DefaultMutableTreeNode(pseudoUsersCo);
                         root.add(child);
-
                     }
                 }
             }
         }
-        return root;
+        JTree nouveauJtree= new JTree(root);
+        nouveauJtree.addTreeSelectionListener(e -> {
+            try {
+                onClickSelectionUserCo(nouveauJtree.getSelectionPath(), listeSessions, sessionsPane,  view);
+            } catch ( IOException e1 ) {
+                e1.printStackTrace();
+            } catch ( NotFileException e1 ) {
+                e1.printStackTrace();
+            }
+        });
+        nouveauJtree.setScrollsOnExpand(true);
+        return nouveauJtree;
     }
 
-    public DefaultMutableTreeNode actualiserMenuSessions(){
+    public JTree creerMenuSessions(){
         DefaultMutableTreeNode root = new DefaultMutableTreeNode("Sessions Actives");
         if(!(chatManager.useSessions().retourneListeSessions().isEmpty())){
             for(Map.Entry<UsersDistants, MessageHistorique> entry : chatManager.useSessions().retourneListeSessions().entrySet()) {
@@ -130,17 +150,38 @@ public class DialoguePageController {
                 }
             }
         }
-        return root;
+        return new JTree(root);
     }
 
-    public void onClickStopButtonSession(JTree listeSessions, String pseudo) {
+    public void onClickStopButtonSession(JTree listeSessions, String pseudo, JPanel panel, DialoguePageViewer view) {
         UsersDistants userSelectionne = chatManager.accesALaListeDesUsagers().retourneUtilisateurDistantsParSonPseudo(pseudo);
         chatManager.getProtocoleDeCommunication().envoieDeFinDeSession(userSelectionne.getLogin());
         chatManager.useSessions().removeUserDistantOfSession(userSelectionne);
+        actualiserMenuSession(panel, listeSessions, view);
         listeSessions.updateUI();
 
     }
 
+    public void actualiserMenuUsersCo(JPanel panel, JTree listeUsersCo, DialoguePageViewer view, JPanel sessionsPane, JTree listeSessions) {
+        JTree nouveauJtree = creeMenuUsersCo(listeUsersCo,listeSessions, sessionsPane, view);
+        panel.remove(listeUsersCo);
 
+        view.setJtreeUsersCo(nouveauJtree);
 
+        panel.add(nouveauJtree);
+        panel.updateUI();
+    }
+
+    private void actualiserMenuSession(JPanel panel, JTree listeSession, DialoguePageViewer view) {
+        JTree nouveauJtree = creerMenuSessions();
+        panel.remove(listeSession);
+
+        view.setJtreeSessions(nouveauJtree);
+        panel.add(nouveauJtree);
+        panel.updateUI();
+    }
 }
+
+
+
+

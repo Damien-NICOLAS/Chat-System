@@ -69,6 +69,9 @@ public class Sessions {
 
         return historiqueCourant;
     }
+    public String retourneFileUserCourant() {
+        return listeSessions.get(chatManager.useSessionCourante()).toString();
+    }
 
 
 }

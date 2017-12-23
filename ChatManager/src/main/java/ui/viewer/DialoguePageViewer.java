@@ -1,17 +1,13 @@
 package ui.viewer;
 
 
+import historique.NotFileException;
 import main.ChatManager;
 import ui.presenter.DialoguePageController;
 
 import javax.swing.*;
-import javax.swing.tree.DefaultMutableTreeNode;
-import javax.swing.tree.TreeSelectionModel;
 import java.awt.*;
-import java.sql.Time;
-import java.util.Locale;
-
-import static javax.swing.tree.TreeSelectionModel.SINGLE_TREE_SELECTION;
+import java.io.IOException;
 
 public class DialoguePageViewer extends JFrame{
     private DialoguePageController presenter;
@@ -20,6 +16,7 @@ public class DialoguePageViewer extends JFrame{
     private JButton sendButton;
     private JTree listeUsersConnectes, listeSessions;
     private ChatManager chatManager;
+    private JPanel sessionsPane;
 
     public DialoguePageViewer(ChatManager theCM)throws HeadlessException {
         this.chatManager = theCM;
@@ -65,15 +62,20 @@ public class DialoguePageViewer extends JFrame{
         chatBox.add(box);
 
 
-        DefaultMutableTreeNode root = presenter.actualiserMenuUsersCo();
-
-        listeUsersConnectes = new JTree(root);
+        listeUsersConnectes = presenter.creeMenuUsersCo(listeUsersConnectes, listeSessions, sessionsPane, this);
         listeUsersConnectes.setScrollsOnExpand(true);
         listeUsersConnectes.updateUI();
-        listeUsersConnectes.addTreeSelectionListener(e -> presenter.onClickSelectionUserCo(listeUsersConnectes.getSelectionPath()));
+        listeUsersConnectes.addTreeSelectionListener(e -> {
+            try {
+                presenter.onClickSelectionUserCo(listeUsersConnectes.getSelectionPath(), listeSessions, sessionsPane,  this);
+            } catch ( IOException e1 ) {
+                e1.printStackTrace();
+            } catch ( NotFileException e1 ) {
+                e1.printStackTrace();
+            }
+        });
 
-        DefaultMutableTreeNode rootSession = presenter.actualiserMenuSessions();
-        listeSessions = new JTree(rootSession);
+        listeSessions = presenter.creerMenuSessions();
         listeSessions.setScrollsOnExpand(true);
 
         listeSessions.updateUI();
@@ -84,22 +86,22 @@ public class DialoguePageViewer extends JFrame{
         listePane.setBackground(Color.WHITE);
         listePane.add(listeUsersConnectes);
 
-        JButton ActualiseUsersCoButton = new JButton("Actualiser");
-        ActualiseUsersCoButton.addActionListener(e -> presenter.actualiserMenuUsersCo());
+        JButton actualiseUsersCoButton = new JButton("Actualiser");
+
 
 
 
         Box userCoBox = Box.createVerticalBox();
         userCoBox.add(listePane);
-        userCoBox.add(ActualiseUsersCoButton);
+        userCoBox.add(actualiseUsersCoButton);
+        actualiseUsersCoButton.addActionListener(e -> presenter.actualiserMenuUsersCo(listePane, listeUsersConnectes, this, sessionsPane, listeSessions));
 
-
-        JPanel sessionsPane = new JPanel();
+        sessionsPane = new JPanel();
         sessionsPane.setBackground(Color.WHITE);
         sessionsPane.add(listeSessions);
 
         JButton stopSessionButton = new JButton("Déconnexion");
-        stopSessionButton.addActionListener(e -> presenter.onClickStopButtonSession(listeSessions, listeSessions.getName()));
+        stopSessionButton.addActionListener(e -> presenter.onClickStopButtonSession(listeSessions, listeSessions.getName(), sessionsPane, this));
         stopSessionButton.setEnabled(false);
 
         Box sessionsBox = Box.createVerticalBox();
@@ -114,12 +116,22 @@ public class DialoguePageViewer extends JFrame{
         add(userCoBox, BorderLayout.WEST);
 
 
+
     }
 
     public void display() {
         pack();
         setVisible(true);
         setLocationRelativeTo(null);
+    }
+
+
+    public void setJtreeUsersCo (JTree nouveau){
+        listeUsersConnectes = nouveau;
+    }
+
+    public void setJtreeSessions (JTree nouveau){
+        listeSessions = nouveau;
     }
 
     public void ajoutTextAreaByUserLoc(String text) {

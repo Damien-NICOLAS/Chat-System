@@ -21,6 +21,7 @@ public class ListeDesUsagers {
         String leLoginUserDistant = nouveauUserDistant.getLogin();
         if(listeDesUsersParLeurLogin.containsKey(leLoginUserDistant)){
             listeDesUsersParLeurLogin.replace(leLoginUserDistant, nouveauUserDistant);
+
         }
         else{
             listeDesUsersParLeurLogin.put(leLoginUserDistant, nouveauUserDistant);
