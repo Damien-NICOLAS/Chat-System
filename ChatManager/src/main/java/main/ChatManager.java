@@ -5,6 +5,7 @@ import model.ListeDesUsagers;
 import model.Sessions;
 import model.UserLocal;
 import model.UsersDistants;
+import ui.viewer.DialoguePageViewer;
 
 
 import java.util.Set;
@@ -16,15 +17,17 @@ public class ChatManager {
     private final ListeDesUsagers listeDesUsagers;
     private final Sessions session;
     private UserLocal user;
+    private DialoguePageViewer pageViewer;
 
 
     public ChatManager(){
         this.protocoleDeCommunication = new ProtocoleDeCommunication(this);
         this.session = new Sessions(this);
-        this.user = new UserLocal(null, null, "vince", "toto");
+        this.user = new UserLocal(null, null, "damien", "toto");
         this.listeDesUsagers = new ListeDesUsagers(this);
         protocoleDeCommunication.ecouteDuReseauEnUDP();
         protocoleDeCommunication.ecouteDuReseauEnTCP(userPort());
+
 
     }
 
@@ -107,5 +110,14 @@ public class ChatManager {
 
     public UsersDistants useSessionCourante(){
         return session.userDistantSessionCourante();
+    }
+
+
+    public void setPageViewer(DialoguePageViewer dialoguePageViewer){
+        this.pageViewer = dialoguePageViewer;
+    }
+
+    public void afficherDuTexteSurLInterface(String text, String login){
+        pageViewer.ajoutTextAreaByUserDistant(text, login);
     }
 }

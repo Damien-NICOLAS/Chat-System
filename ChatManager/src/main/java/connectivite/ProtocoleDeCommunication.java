@@ -102,7 +102,10 @@ public class ProtocoleDeCommunication {
                 String[] messageEtCeluiQuiTeParleAsTab = messageEtCeluiQuiTeParleAsString.split("[,]");
                 String celuiQuiTeParle = messageEtCeluiQuiTeParleAsTab[0];
                 String message = messageEtCeluiQuiTeParleAsTab[1];
-                MessageHistorique theMessageHistorique = new MessageHistorique(clavardageManager);//clavardageManager.useListSessions().retrouveUnHistoriqueParSonUser(celuiQuiTeParle);
+                if(celuiQuiTeParle.equals(clavardageManager.useSessionCourante().getLogin())){
+                    clavardageManager.afficherDuTexteSurLInterface(message, celuiQuiTeParle);
+                }
+                MessageHistorique theMessageHistorique = clavardageManager.useSessions().retourneLHistoriqueDesMessagesDuUserRecherche(celuiQuiTeParle);
                 try {
                     theMessageHistorique.ecriturefichier(MomentEcriture.MESSAGE_ENVOYE, message);
                 } catch (IOException e) {
@@ -148,7 +151,7 @@ public class ProtocoleDeCommunication {
                 System.out.println("Demande ouverture de session "+ clavardageManager.useSessionCourante());
                 MessageHistorique messageHistorique = new MessageHistorique(clavardageManager);//clavardageManager.useListSessions().retrouveUnHistoriqueParSonUser(theUserQuiVeutParlerAvecMoi.getLogin());
                 System.out.println(messageHistorique.findfichier().getAbsolutePath());
-                messageHistorique.lireFichier(messageHistorique.findfichier().getAbsolutePath());
+                messageHistorique.lireFichier(messageHistorique.findfichier().getAbsolutePath(), loginUserDistantQuiVeutParlerAvecMoi);
                 System.out.println("j'ai créé le fichier"+messageHistorique.findfichier().getAbsolutePath());
                 break;
 
@@ -181,14 +184,18 @@ public class ProtocoleDeCommunication {
 
         UsersDistants userLocalAsDistant = clavardageManager.returnUserLocal().retourneUserLocalAsDistant();
 
-        Set<String> toutLesUtilisateurConnecte = clavardageManager.accesALaListeDesUsagers().retourneToutLesUsagers();
         MessageSurLeReseau messageSurLeReseau = new MessageSurLeReseau(Entete.ENVOIE_USERLOCAL, userLocalAsDistant);
 
 
-        envoieDunMessageEnUDP(toutLesUtilisateurConnecte, messageSurLeReseau);
-        System.out.println("J'ai envoyé mon user local");
+        try {
+
+            udp_envoieMessage.sendMessageOn(PORT_UDP_BROADCAST, messageSurLeReseau);
+        } catch (Exception e) {
+
+        }
 
     }
+
 
 
 

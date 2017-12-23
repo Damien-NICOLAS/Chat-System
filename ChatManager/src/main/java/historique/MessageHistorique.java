@@ -2,22 +2,16 @@ package historique;
 
 
 import main.ChatManager;
-import model.Sessions;
 import ui.viewer.DialoguePageViewer;
 
-import java.io.File;
-import java.io.InputStreamReader;
-import java.io.IOException;
 import java.io.*;
-
 import java.time.LocalDateTime;
 import java.util.HashMap;
-
-
 import java.util.Map;
 import java.util.Queue;
 import java.util.concurrent.LinkedBlockingQueue;
-import java.util.regex.*;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 
 
@@ -26,7 +20,7 @@ public class MessageHistorique {
     private static final int TAILLE_LISTE = 10;
     private final File repertoire;
     private static HashMap<String, File> listeFichiers;
-    private static final String PATH = ".\\src\\main\\HistoriqueDossier\\";
+    private static final String PATH = "src/main/HistoriqueDossier/";
     private final ChatManager chatManager;
     private File fichierSessionHistorique;
 
@@ -39,21 +33,25 @@ public class MessageHistorique {
 
     }
     public String toString() {
-        return PATH+chatManager.userLogin()+"_"+chatManager.useSessions().userDistantSessionCourante().getLogin()+".txt";
+        File file = new File("ChatManager/src/main/HistoriqueDossier/path.txt");
+        String path = file.getAbsolutePath();
+        String pathMoinsText = path.substring(0, path.length()-8);
+
+        return pathMoinsText+chatManager.userLogin()+"_"+chatManager.useSessions().userDistantSessionCourante().getLogin()+".txt";
     }
 
     public void creerFichier() throws IOException, NotFileException {
         fichierSessionHistorique = new File(toString());
-        System.out.println("création fichierSessionHistorique");
-        if(!fichierSessionHistorique.exists()){
-            if (!fichierSessionHistorique.createNewFile()) {
-                throw new NotFileException("Impossible de créer  le fichier");
-            }
-        }
+        FileWriter fw = new FileWriter("src/main/historiqueFIle/"+chatManager.userLogin()+"_"+chatManager.useSessionCourante().getLogin()+".txt");
+
+
     }
+
 
     public void ecriturefichier(MomentEcriture moment, String message) throws IOException {
         String message_prepare = null;
+        File fichierSessionHistorique = this.findfichier();
+        System.out.println(fichierSessionHistorique.getName());
         FileWriter write = new FileWriter(fichierSessionHistorique, true);
         switch (moment){
 
@@ -66,6 +64,7 @@ public class MessageHistorique {
                 break;
             default:
                 throw new IOException("Ecriture failed");
+
 
         }
 
@@ -89,9 +88,6 @@ public class MessageHistorique {
     public void listeFichiersDossier() throws NotDirectoryException, CasseNomFichierException {
 
         File[] files = repertoire.listFiles();
-        if (!repertoire.isDirectory()) {
-            throw new NotDirectoryException("Le nom renseigné n'est pas un dossier!!!");
-        }
 
         for (int i = 0; i < (files != null ? files.length : 0); i++) {
             if (!checkNomFichier(files[i].getName())) {
@@ -140,12 +136,12 @@ public class MessageHistorique {
     }
 
 
-    public void lireFichier(String nomfichier) throws IOException, NotFileException {
+    public void lireFichier(String nomfichier, String loginUserDist) throws IOException, NotFileException {
         Queue<String> lignes = historique10DerniersMessages(nomfichier);
         for (String ligneCourante : lignes){
             System.out.println("lirefichier, messageHistorique : "+ligneCourante);
             DialoguePageViewer dialoguePageViewer = new DialoguePageViewer(chatManager);
-            dialoguePageViewer.ajoutTextArea(ligneCourante);
+            dialoguePageViewer.ajoutTextAreaByUserDistant(ligneCourante, loginUserDist);
 
         }
 

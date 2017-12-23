@@ -36,9 +36,9 @@ public class PseudoPageController {
         chatManager.addPseudoToUser(pseudo);
         chatManager.accesALaListeDesUsagers().ajouteUnUtilisateurDistantALaListe(chatManager.returnUserLocal().retourneUserLocalAsDistant());
 
-        if (chatManager.accesALaListeDesUsagers().retourneToutLesUsagers() != null){
-            this.chatManager.getProtocoleDeCommunication().diffusionDuUserLocal();
-        }
+
+        this.chatManager.getProtocoleDeCommunication().diffusionDuUserLocal();
+
         DialoguePageViewer dialoguePageViewer = new DialoguePageViewer(this.chatManager);
         parent.dispose();
         dialoguePageViewer.display();

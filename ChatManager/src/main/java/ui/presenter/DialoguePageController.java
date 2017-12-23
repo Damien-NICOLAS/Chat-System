@@ -1,6 +1,7 @@
 package ui.presenter;
 
 import historique.MessageHistorique;
+import historique.MomentEcriture;
 import main.ChatManager;
 import model.ListeDesUsagers;
 import model.Sessions;
@@ -10,6 +11,7 @@ import ui.viewer.DialoguePageViewer;
 import javax.swing.*;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.TreePath;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Map;
 import java.util.SplittableRandom;
@@ -21,17 +23,32 @@ public class DialoguePageController {
 
     private final ChatManager chatManager;
 
+
     public DialoguePageController(ChatManager theCM){
         chatManager = theCM;
     }
     public void onSendButton(String text, DialoguePageViewer view) {
-        view.ajoutTextArea(text);
+        view.ajoutTextAreaByUserLoc(text);
         chatManager.getProtocoleDeCommunication().envoieMessage(chatManager.useSessionCourante().getLogin(), text );
+        MessageHistorique messageHistorique = chatManager.useSessions().retourneHistoriqueEnFonctionDuUserDistantCourant();
+        try {
+            messageHistorique.ecriturefichier(MomentEcriture.MESSAGE_ENVOYE, text);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
 
     }
 
     public void onEnterTouch(String text, DialoguePageViewer view) {
-        view.ajoutTextArea(text);
+        view.ajoutTextAreaByUserLoc(text);
+        chatManager.getProtocoleDeCommunication().envoieMessage(chatManager.useSessionCourante().getLogin(), text );
+        MessageHistorique messageHistorique = chatManager.useSessions().retourneHistoriqueEnFonctionDuUserDistantCourant();
+        try {
+            messageHistorique.ecriturefichier(MomentEcriture.MESSAGE_ENVOYE, text);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     public void onClickSelectionUserCo(TreePath selection) {
@@ -123,5 +140,7 @@ public class DialoguePageController {
         listeSessions.updateUI();
 
     }
+
+
 
 }

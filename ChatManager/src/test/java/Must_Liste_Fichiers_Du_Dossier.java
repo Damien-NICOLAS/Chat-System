@@ -27,6 +27,7 @@ public class Must_Liste_Fichiers_Du_Dossier {
         String fichierATrouver = "vince_toto.txt";
         String message = "Salut ça va !!!!!";
         monMessageHistorique = new MessageHistorique(theCM);
+        theCM.defenieSessionCourante(user);
 
         try {
             monMessageHistorique.creerFichier();
@@ -39,7 +40,7 @@ public class Must_Liste_Fichiers_Du_Dossier {
             } else {
                 System.out.println("Fichier non trouvé");
             }
-            monMessageHistorique.lireFichier(fichierTrouver.getAbsolutePath());
+            monMessageHistorique.lireFichier(fichierTrouver.getAbsolutePath(),"toto");
         } catch (IOException e) {
             e.printStackTrace();
         } catch (NotFileException e) {

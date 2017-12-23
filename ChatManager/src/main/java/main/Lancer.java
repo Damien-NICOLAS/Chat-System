@@ -5,7 +5,7 @@ import connectivite.*;
 
 import javax.swing.*;
 
-public class Lancer {
+public class  Lancer {
 
     public static void main(String[] args){
 

@@ -8,6 +8,8 @@ import javax.swing.*;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.TreeSelectionModel;
 import java.awt.*;
+import java.sql.Time;
+import java.util.Locale;
 
 import static javax.swing.tree.TreeSelectionModel.SINGLE_TREE_SELECTION;
 
@@ -112,7 +114,6 @@ public class DialoguePageViewer extends JFrame{
         add(userCoBox, BorderLayout.WEST);
 
 
-
     }
 
     public void display() {
@@ -121,8 +122,16 @@ public class DialoguePageViewer extends JFrame{
         setLocationRelativeTo(null);
     }
 
-    public void ajoutTextArea(String text) {
+    public void ajoutTextAreaByUserLoc(String text) {
+        textArea.append(chatManager.userLogin()+" : ");
         textArea.append(text);
         textArea.append("\n");
     }
+
+    public void ajoutTextAreaByUserDistant(String text, String loginDistant) {
+        textArea.append(loginDistant +" : ");
+        textArea.append(text);
+        textArea.append("\n");
+    }
+
 }

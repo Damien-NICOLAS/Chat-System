@@ -4,6 +4,7 @@ import historique.MessageHistorique;
 import main.ChatManager;
 
 
+import java.nio.file.attribute.UserDefinedFileAttributeView;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -49,4 +50,25 @@ public class Sessions {
     public UsersDistants userDistantSessionCourante() {
         return sessionEnCoursDeChat;
     }
+
+    public MessageHistorique retourneLHistoriqueDesMessagesDuUserRecherche(String leLoginDuUserDistant){
+
+        UsersDistants userDistantRecherche = chatManager.accesALaListeDesUsagers().retourneUnUtilisateurDistantParSonLogin(leLoginDuUserDistant);
+
+        MessageHistorique messageHistorique  = listeSessions.get(userDistantRecherche);
+
+        return messageHistorique;
+
+
+    }
+
+    public MessageHistorique retourneHistoriqueEnFonctionDuUserDistantCourant(){
+        UsersDistants userDistantCourant = chatManager.useSessionCourante();
+
+        MessageHistorique historiqueCourant = listeSessions.get(userDistantCourant);
+
+        return historiqueCourant;
+    }
+
+
 }

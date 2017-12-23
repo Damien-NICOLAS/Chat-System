@@ -25,6 +25,7 @@ public class ListeDesUsagers {
         else{
             listeDesUsersParLeurLogin.put(leLoginUserDistant, nouveauUserDistant);
         }
+
         System.out.println("j'ai ajouté un usager : "+ leLoginUserDistant + " " + retourneUnUtilisateurDistantParSonLogin(leLoginUserDistant).getAdresseIP());
     }
 
@@ -77,5 +78,9 @@ public class ListeDesUsagers {
 
     public void enleveUnUserDistant(String leLoginDuUserDistantQuiSeDeconnecte) {
         listeDesUsersParLeurLogin.remove(leLoginDuUserDistantQuiSeDeconnecte);
+    }
+
+    void run(){
+
     }
 }
