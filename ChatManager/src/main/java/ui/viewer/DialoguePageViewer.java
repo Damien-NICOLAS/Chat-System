@@ -21,6 +21,7 @@ public class DialoguePageViewer extends JFrame{
     public DialoguePageViewer(ChatManager theCM)throws HeadlessException {
         this.chatManager = theCM;
         presenter = new DialoguePageController(theCM);
+        chatManager.setPageViewer(this);
         build(chatManager.userPseudo());
 
 
@@ -141,9 +142,8 @@ public class DialoguePageViewer extends JFrame{
     }
 
     public void ajoutTextAreaByUserDistant(String text, String loginDistant) {
-        textArea.append(loginDistant +" : ");
-        textArea.append(text);
-        textArea.append("\n");
+        textArea.append(loginDistant +" : " + text + "\n");
+
     }
 
 }

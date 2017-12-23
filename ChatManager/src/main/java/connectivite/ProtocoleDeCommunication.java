@@ -100,11 +100,12 @@ public class ProtocoleDeCommunication {
             case ENVOIE_MESSAGE:
                 String messageEtCeluiQuiTeParleAsString = messageSurLeReseauRecue[1];
                 String[] messageEtCeluiQuiTeParleAsTab = messageEtCeluiQuiTeParleAsString.split("[,]");
-                String celuiQuiTeParle = messageEtCeluiQuiTeParleAsTab[0];
-                String message = messageEtCeluiQuiTeParleAsTab[1];
-                if(celuiQuiTeParle.equals(clavardageManager.useSessionCourante().getLogin())){
-                    clavardageManager.afficherDuTexteSurLInterface(message, celuiQuiTeParle);
-                }
+                String celuiQuiTeParle = messageEtCeluiQuiTeParleAsTab[1];
+                String message = messageEtCeluiQuiTeParleAsTab[0];
+                System.out.println(message + " "+ celuiQuiTeParle);
+                clavardageManager.afficherDuTexteSurLInterface(message, celuiQuiTeParle);
+
+                System.out.println(message + " "+ celuiQuiTeParle);
                 MessageHistorique theMessageHistorique = clavardageManager.useSessions().retourneLHistoriqueDesMessagesDuUserRecherche(celuiQuiTeParle);
                 try {
                     theMessageHistorique.ecriturefichier(MomentEcriture.MESSAGE_ENVOYE, message);
@@ -148,11 +149,6 @@ public class ProtocoleDeCommunication {
                 String loginUserDistantQuiVeutParlerAvecMoi = messageSurLeReseauRecue[1];
                 UsersDistants theUserQuiVeutParlerAvecMoi = clavardageManager.accesALaListeDesUsagers().retourneUnUtilisateurDistantParSonLogin(loginUserDistantQuiVeutParlerAvecMoi);
                 clavardageManager.useSessions().addUserDistantToSession(theUserQuiVeutParlerAvecMoi);
-                System.out.println("Demande ouverture de session "+ clavardageManager.useSessionCourante());
-                MessageHistorique messageHistorique = new MessageHistorique(clavardageManager);//clavardageManager.useListSessions().retrouveUnHistoriqueParSonUser(theUserQuiVeutParlerAvecMoi.getLogin());
-                System.out.println(messageHistorique.findfichier().getAbsolutePath());
-                messageHistorique.lireFichier(messageHistorique.findfichier().getAbsolutePath(), loginUserDistantQuiVeutParlerAvecMoi);
-                System.out.println("j'ai créé le fichier"+messageHistorique.findfichier().getAbsolutePath());
                 break;
 
             case ENVOIE_USERSDISTANTS:
