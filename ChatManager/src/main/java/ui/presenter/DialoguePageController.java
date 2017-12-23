@@ -158,6 +158,7 @@ public class DialoguePageController {
         chatManager.getProtocoleDeCommunication().envoieDeFinDeSession(userSelectionne.getLogin());
         chatManager.useSessions().removeUserDistantOfSession(userSelectionne);
         actualiserMenuSession(panel, listeSessions, view);
+        view.setModifierEtatButtonDeconnexion();
         listeSessions.updateUI();
 
     }

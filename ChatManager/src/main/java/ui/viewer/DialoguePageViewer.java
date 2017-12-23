@@ -17,6 +17,7 @@ public class DialoguePageViewer extends JFrame{
     private JTree listeUsersConnectes, listeSessions;
     private ChatManager chatManager;
     private JPanel sessionsPane;
+    private JButton stopSessionButton;
 
     public DialoguePageViewer(ChatManager theCM)throws HeadlessException {
         this.chatManager = theCM;
@@ -101,7 +102,7 @@ public class DialoguePageViewer extends JFrame{
         sessionsPane.setBackground(Color.WHITE);
         sessionsPane.add(listeSessions);
 
-        JButton stopSessionButton = new JButton("Déconnexion");
+        stopSessionButton = new JButton("Déconnexion");
         stopSessionButton.addActionListener(e -> presenter.onClickStopButtonSession(listeSessions, listeSessions.getName(), sessionsPane, this));
         stopSessionButton.setEnabled(false);
 
@@ -146,4 +147,7 @@ public class DialoguePageViewer extends JFrame{
 
     }
 
+    public void setModifierEtatButtonDeconnexion() {
+        this.stopSessionButton.setEnabled(true);
+    }
 }
