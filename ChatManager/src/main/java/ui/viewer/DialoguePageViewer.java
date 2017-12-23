@@ -81,7 +81,7 @@ public class DialoguePageViewer extends JFrame{
         listeSessions.setScrollsOnExpand(true);
 
         listeSessions.updateUI();
-        //listeSessions.addTreeSelectionListener(e -> presenter.onClickSelection(listeSessions.getName(),rootSession,listeSessions));
+        listeSessions.addTreeSelectionListener(e -> presenter.onClickSelectionSession(listeSessions.getName(),sessionsPane,listeSessions, this));
 
 
         JPanel listePane = new JPanel();
@@ -150,4 +150,9 @@ public class DialoguePageViewer extends JFrame{
     public void setModifierEtatButtonDeconnexion() {
         this.stopSessionButton.setEnabled(true);
     }
+
+    public void setModifierTitle(String login) {
+        String titre =chatManager.userLogin() +"("+chatManager.userPseudo()+") --> "+login;
+        this.setTitle(titre);
+            }
 }

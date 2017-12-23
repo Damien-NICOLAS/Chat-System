@@ -98,10 +98,13 @@ public class DialoguePageController {
 
     public void onClickSelectionSession(String pseudoUtilisateurDistantEnChat, JPanel panel, JTree listeSession, DialoguePageViewer view){
         UsersDistants newUserDistant = chatManager.accesALaListeDesUsagers().retourneUtilisateurDistantsParSonPseudo(pseudoUtilisateurDistantEnChat);
+        view.setModifierEtatButtonDeconnexion();
+        view.setModifierTitle(newUserDistant.getLogin());
         if(newUserDistant !=null) {
             chatManager.defenieSessionCourante(newUserDistant);
             actualiserMenuSession(panel,listeSession, view);
         }
+
 
 
     }
@@ -158,7 +161,6 @@ public class DialoguePageController {
         chatManager.getProtocoleDeCommunication().envoieDeFinDeSession(userSelectionne.getLogin());
         chatManager.useSessions().removeUserDistantOfSession(userSelectionne);
         actualiserMenuSession(panel, listeSessions, view);
-        view.setModifierEtatButtonDeconnexion();
         listeSessions.updateUI();
 
     }
