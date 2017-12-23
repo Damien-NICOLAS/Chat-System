@@ -98,8 +98,8 @@ public class ProtocoleDeCommunication {
 
         switch (enteteDuMessageRentrant) {
             case ENVOIE_MESSAGE:
-                String messageEtCeluiQuiChatAsString = messageSurLeReseauRecue[1];
-                String[] messageEtCeluiQuiTeParleAsTab = messageEtCeluiQuiChatAsString.split("[,]");
+                String messageEtCeluiQuiTeParleAsString = messageSurLeReseauRecue[1];
+                String[] messageEtCeluiQuiTeParleAsTab = messageEtCeluiQuiTeParleAsString.split("[,]");
                 String celuiQuiTeParle = messageEtCeluiQuiTeParleAsTab[0];
                 String message = messageEtCeluiQuiTeParleAsTab[1];
                 if(celuiQuiTeParle.equals(clavardageManager.useSessionCourante().getLogin())){
